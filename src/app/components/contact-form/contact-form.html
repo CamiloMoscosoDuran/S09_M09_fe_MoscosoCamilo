@@ -1,0 +1,93 @@
+<section class="contact-section" id="contact">
+  <div class="contact-container">
+    <h2>¿Tienes Preguntas?</h2>
+    <p class="subtitle">Contáctanos y resolveremos tus dudas en breve</p>
+
+    <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" class="contact-form">
+      <!-- Campo Nombre -->
+      <div class="form-group">
+        <label for="name">Nombre:</label>
+        <input
+          type="text"
+          id="name"
+          [(ngModel)]="formData.name"
+          name="name"
+          placeholder="Tu nombre completo"
+          required
+          minlength="3"
+          #nameInput="ngModel"
+        />
+        <div class="error-messages" *ngIf="nameInput.touched && nameInput.invalid">
+          <span *ngIf="nameInput.errors?.['required']">⚠️ El nombre es requerido</span>
+          <span *ngIf="nameInput.errors?.['minlength']">⚠️ El nombre debe tener al menos 3 caracteres</span>
+        </div>
+        <div class="success-indicator" *ngIf="nameInput.valid && nameInput.touched">
+          ✅ Nombre válido
+        </div>
+      </div>
+
+      <!-- Campo Email -->
+      <div class="form-group">
+        <label for="email">Correo Electrónico:</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="formData.email"
+          name="email"
+          placeholder="tu@email.com"
+          required
+          email
+          #emailInput="ngModel"
+        />
+        <div class="error-messages" *ngIf="emailInput.touched && emailInput.invalid">
+          <span *ngIf="emailInput.errors?.['required']">⚠️ El email es requerido</span>
+          <span *ngIf="emailInput.errors?.['email']">⚠️ El email no es válido</span>
+        </div>
+        <div class="success-indicator" *ngIf="emailInput.valid && emailInput.touched">
+          ✅ Email válido
+        </div>
+      </div>
+
+      <!-- Campo Mensaje -->
+      <div class="form-group">
+        <label for="message">Mensaje:</label>
+        <textarea
+          id="message"
+          [(ngModel)]="formData.message"
+          name="message"
+          rows="5"
+          placeholder="Cuéntanos tu consulta..."
+          required
+          minlength="10"
+          #messageInput="ngModel"
+        ></textarea>
+        <div class="error-messages" *ngIf="messageInput.touched && messageInput.invalid">
+          <span *ngIf="messageInput.errors?.['required']">⚠️ El mensaje es requerido</span>
+          <span *ngIf="messageInput.errors?.['minlength']">⚠️ El mensaje debe tener al menos 10 caracteres</span>
+        </div>
+        <div class="success-indicator" *ngIf="messageInput.valid && messageInput.touched">
+          ✅ Mensaje válido
+        </div>
+      </div>
+
+      <!-- Botón Submit -->
+      <button 
+        type="submit" 
+        class="submit-btn"
+        [disabled]="contactForm.invalid"
+      >
+        Enviar Mensaje
+      </button>
+
+      <!-- Mensaje de Error General -->
+      <div *ngIf="submitError" class="error-message">
+        ❌ Por favor completa todos los campos correctamente
+      </div>
+
+      <!-- Mensaje de Éxito -->
+      <div *ngIf="submitted && submitSuccess" class="success-message">
+        ✅ ¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.
+      </div>
+    </form>
+  </div>
+</section>

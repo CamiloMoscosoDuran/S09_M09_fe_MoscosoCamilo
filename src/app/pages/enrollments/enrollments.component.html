@@ -1,0 +1,181 @@
+<h2 class="titulo">Gestión de Videojuegos</h2>
+<div class="container">
+    <!-- Formulario de Registro/Edición -->
+    <div class="formulario">
+        <h3>{{editMode ? 'Editar Videojuego' : 'Nuevo Videojuego'}}</h3>
+        <form #gameForm="ngForm" (ngSubmit)="save(gameForm)">
+            
+            <!-- Campo Título -->
+            <div class="form-group">
+                <label for="title">Título del Juego:</label>
+                <input 
+                    type="text" 
+                    id="title"
+                    [(ngModel)]="game.title" 
+                    name="title" 
+                    placeholder="Título del Juego"
+                    required
+                    minlength="3"
+                    #titleInput="ngModel"
+                >
+                <div class="error-messages" *ngIf="titleInput.touched && titleInput.invalid">
+                    <span *ngIf="titleInput.errors?.['required']">⚠️ El título es requerido</span>
+                    <span *ngIf="titleInput.errors?.['minlength']">⚠️ El título debe tener al menos 3 caracteres</span>
+                </div>
+            </div>
+
+            <!-- Campo Género -->
+            <div class="form-group">
+                <label for="genre">Género:</label>
+                <input 
+                    type="text" 
+                    id="genre"
+                    [(ngModel)]="game.genre" 
+                    name="genre" 
+                    placeholder="Género"
+                    required
+                    minlength="3"
+                    #genreInput="ngModel"
+                >
+                <div class="error-messages" *ngIf="genreInput.touched && genreInput.invalid">
+                    <span *ngIf="genreInput.errors?.['required']">⚠️ El género es requerido</span>
+                    <span *ngIf="genreInput.errors?.['minlength']">⚠️ El género debe tener al menos 3 caracteres</span>
+                </div>
+            </div>
+
+            <!-- Campo Fecha de Lanzamiento -->
+            <div class="form-group">
+                <label for="releaseDate">Fecha de Lanzamiento:</label>
+                <input 
+                    type="date" 
+                    id="releaseDate"
+                    [(ngModel)]="game.releaseDate" 
+                    name="releaseDate"
+                    required
+                    #releaseDateInput="ngModel"
+                >
+                <div class="error-messages" *ngIf="releaseDateInput.touched && releaseDateInput.invalid">
+                    <span *ngIf="releaseDateInput.errors?.['required']">⚠️ La fecha de lanzamiento es requerida</span>
+                </div>
+            </div>
+
+            <!-- Campo Precio -->
+            <div class="form-group">
+                <label for="price">Precio:</label>
+                <input 
+                    type="number" 
+                    id="price"
+                    [(ngModel)]="game.price" 
+                    name="price" 
+                    placeholder="Precio"
+                    required
+                    min="0"
+                    step="0.01"
+                    #priceInput="ngModel"
+                >
+                <div class="error-messages" *ngIf="priceInput.touched && priceInput.invalid">
+                    <span *ngIf="priceInput.errors?.['required']">⚠️ El precio es requerido</span>
+                    <span *ngIf="priceInput.errors?.['min']">⚠️ El precio no puede ser negativo</span>
+                </div>
+            </div>
+
+            <!-- Campo Imagen (Opcional) -->
+            <div class="form-group">
+                <label for="image">URL de la Imagen:</label>
+                <input 
+                    type="text" 
+                    id="image"
+                    [(ngModel)]="game.image" 
+                    name="image" 
+                    placeholder="URL de la Imagen (opcional)"
+                >
+                <small>Este campo es opcional</small>
+            </div>
+
+            <!-- Campo Calificación -->
+            <div class="form-group">
+                <label for="rating">Calificación (1-5):</label>
+                <input 
+                    type="number" 
+                    id="rating"
+                    [(ngModel)]="game.rating" 
+                    name="rating" 
+                    placeholder="Calificación"
+                    min="1" 
+                    max="5" 
+                    step="0.1"
+                    required
+                    #ratingInput="ngModel"
+                >
+                <div class="error-messages" *ngIf="ratingInput.touched && ratingInput.invalid">
+                    <span *ngIf="ratingInput.errors?.['required']">⚠️ La calificación es requerida</span>
+                    <span *ngIf="ratingInput.errors?.['min']">⚠️ La calificación mínima es 1</span>
+                    <span *ngIf="ratingInput.errors?.['max']">⚠️ La calificación máxima es 5</span>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="button-group">
+                <button 
+                    type="submit"
+                    [disabled]="gameForm.invalid"
+                    class="submit-btn"
+                >
+                    {{editMode ? 'Actualizar' : 'Agregar'}}
+                </button>
+                <button 
+                    type="button"
+                    *ngIf="editMode"
+                    (click)="cancelEdit()"
+                    class="cancel-btn"
+                >
+                    Cancelar
+                </button>
+            </div>
+
+            <!-- Mensaje de Error General -->
+            <div *ngIf="submitError" class="error-message">
+                ❌ {{errorMessage}}
+            </div>
+        </form>
+
+        <!-- Mensaje de Éxito -->
+        <div *ngIf="submitSuccess" class="success-message">
+            ✅ {{editMode ? 'Videojuego actualizado' : 'Videojuego agregado'}} exitosamente
+        </div>
+    </div>
+
+    <!-- Lista de Videojuegos -->
+    <div class="lista">
+        <h3>Videojuegos Registrados</h3>
+        <div *ngIf="games.length === 0" class="no-data">
+            <p>No hay videojuegos registrados. ¡Agrega uno!</p>
+        </div>
+        <table *ngIf="games.length > 0">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Género</th>
+                    <th>Fecha de Lanzamiento</th>
+                    <th>Precio</th>
+                    <th>Calificación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let g of games">
+                    <td>{{g.title}}</td>
+                    <td>{{g.genre}}</td>
+                    <td>{{g.releaseDate | date}}</td>
+                    <td>${{g.price}}</td>
+                    <td>⭐ {{g.rating}}</td>
+                    <td>
+                        <button class="edit-btn" (click)="edit(g)">Editar</button>
+                        <button class="delete-btn" (click)="delete(g.id!)">Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
